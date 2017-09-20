@@ -10,7 +10,7 @@ let fnDateTableRus = (#"Дата начала" as date, #"Дата оконча�
     InsertQuarter = Table.AddColumn(InsertQuarterNum, "Квартал", each "Кв." & Number.ToText([Номер квартала])),
     InsertMonth = Table.AddColumn(InsertQuarter, "Номер месяца", each Date.Month([Дата]), Int64.Type),
     InsertStartOfMonth = Table.AddColumn(InsertMonth, "Начало месяца", each Date.StartOfMonth([Дата]), type date),
- InsertEndOfMonth = Table.AddColumn(InsertStartOfMonth , "Конец месяца", each Date.EndOfMonth([Дата]), type date),
+    InsertEndOfMonth = Table.AddColumn(InsertStartOfMonth , "Конец месяца", each Date.EndOfMonth([Дата]), type date),
     InsertDay = Table.AddColumn(InsertEndOfMonth, "День месяца", each Date.Day([Дата])),
     InsertDayInt = Table.AddColumn(InsertDay, "Код даты", each [Год] * 10000 + [Номер месяца] * 100 + [День месяца]),
     InsertMonthName = Table.AddColumn(InsertDayInt, "Месяц", each Date.ToText([Дата], "MMMM", "RU"), type text),
@@ -25,8 +25,7 @@ let fnDateTableRus = (#"Дата начала" as date, #"Дата оконча�
     InsertMonthnYear = Table.AddColumn(InsertWeekNumber,"Код месяца года", each [Год] * 10000 + [Номер месяца] * 100),
     InsertQuarternYear = Table.AddColumn(InsertMonthnYear,"Код квартала года", each [Год] * 10000 + [Номер квартала] * 100),
     ChangedType1 = Table.TransformColumnTypes(InsertQuarternYear,{{"Код квартала года", Int64.Type},{"Номер недели", Int64.Type},{"Квартал", type text},{"Год", type text},{"Код месяца года", Int64.Type}, {"Код даты", Int64.Type}, {"День месяца", Int64.Type}, {"Номер квартала", Int64.Type}, {"Месяц года", type text}, {"Квартал года", type text}, {"Номер дня недели", Int64.Type}})
- 
-    in
+  in
     ChangedType1
 in
     fnDateTableRus
