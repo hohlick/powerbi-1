@@ -1,6 +1,6 @@
 let fnDateTimeTable = (StartDate as date, EndDate as date, IncrementMinutes as number, optional Culture as nullable text) as table =>
   let
-TimeCount = Duration.TotalMinutes(#datetime(Date.Year(EndDate),Date.Month(EndDate),Date.Day(EndDate),23,59,59)- #datetime(Date.Year(StartDate),Date.Month(StartDate),Date.Day(StartDate),0,0,0))/IncrementMinutes,
+    TimeCount = Duration.TotalMinutes(#datetime(Date.Year(EndDate),Date.Month(EndDate),Date.Day(EndDate),23,59,59)- #datetime(Date.Year(StartDate),Date.Month(StartDate),Date.Day(StartDate),0,0,0))/IncrementMinutes,
     Source = List.DateTimes(#datetime(Date.Year(StartDate),Date.Month(StartDate),Date.Day(StartDate),0,0,0),TimeCount,#duration(0,0,IncrementMinutes,0)),
     TableFromList = Table.FromList(Source, Splitter.SplitByNothing()),    
     ChangedType = Table.TransformColumnTypes(TableFromList,{{"Column1", type datetime}}),
@@ -23,14 +23,13 @@ TimeCount = Duration.TotalMinutes(#datetime(Date.Year(EndDate),Date.Month(EndDat
     InsertCalendarQtr = Table.AddColumn(InsertCalendarMonth, "Qrt Year", each "Q" & Number.ToText([QuarterNum]) & " " & Number.ToText([Year]), type text),
     InsertDayWeek = Table.AddColumn(InsertCalendarQtr, "DayInWeek", each Date.DayOfWeek([Date])),
     InsertDayName = Table.AddColumn(InsertDayWeek, "Week Day", each Date.ToText([Date], "dddd", Culture), type text),
-InsertShortDayName = Table.AddColumn(InsertDayName, "DayOfWeek", each Date.ToText([Date], "ddd", Culture), type text),
+    InsertShortDayName = Table.AddColumn(InsertDayName, "DayOfWeek", each Date.ToText([Date], "ddd", Culture), type text),
     InsertWeekEnding = Table.AddColumn(InsertShortDayName , "Week Ending", each Date.EndOfWeek([Date]), type date),
     InsertWeekNumber= Table.AddColumn(InsertWeekEnding, "Week Number", each Date.WeekOfYear([Date])),
     InsertMonthnYear = Table.AddColumn(InsertWeekNumber,"MonthnYear", each [Year] * 10000 + [MonthOfYear] * 100),
     InsertQuarternYear = Table.AddColumn(InsertMonthnYear,"QuarternYear", each [Year] * 10000 + [QuarterNum] * 100),
     ChangedType1 = Table.TransformColumnTypes(InsertQuarternYear,{{"QuarternYear", Int64.Type},{"Week Number", Int64.Type},{"Quarter", type text},{"Year", type text},{"MonthnYear", Int64.Type}, {"DateInt", Int64.Type}, {"DayOfMonth", Int64.Type}, {"MonthOfYear", Int64.Type}, {"QuarterNum", Int64.Type}, {"DayInWeek", Int64.Type}})
-
-    in
+  in
     ChangedType1
 in
     fnDateTimeTable
